@@ -292,51 +292,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Enable text editing for manual edit spans
-    window.enableTextEdit = function(element) {
-        const currentText = element.innerText;
+    window.enableTextEdit = function (element) {
+        const currentText = element.innerText.trim();
         const defaultText = element.getAttribute('data-default-text');
-
-        if (currentText === defaultText) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = '';
-            input.classList.add('edit-input');
-
-            element.innerHTML = '';
-            element.appendChild(input);
-            input.focus();
-
-            input.addEventListener('input', function() {
-                synchronizeText(input.value, defaultText, element);
-            });
-            
-            input.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    saveEditedText(element, input);
-                }
-            });
-
-            input.addEventListener('blur', function() {
+    
+        // Allow re-triggering even if content is already modified
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentText === defaultText ? '' : currentText; // Preserve edited text if modified
+        input.classList.add('edit-input');
+    
+        element.innerHTML = ''; // Clear the span content
+        element.appendChild(input);
+        input.focus();
+    
+        input.addEventListener('input', function () {
+            synchronizeText(input.value, defaultText, element);
+        });
+    
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
                 saveEditedText(element, input);
-            });
-        }
+            }
+        });
+    
+        input.addEventListener('blur', function () {
+            saveEditedText(element, input);
+        });
     };
-
+    
+    // Synchronize text across matching spans
     function synchronizeText(value, defaultText, editedElement) {
         const allSpans = document.querySelectorAll(`[data-default-text="${defaultText}"]`);
         allSpans.forEach(span => {
-            if (span !== editedElement) {  // Skip the currently edited span
-                span.innerText = value || defaultText;  // Update all matching spans in real-time
+            if (span !== editedElement) { // Skip the currently edited span
+                span.innerText = value || defaultText; // Update all matching spans in real-time
             }
         });
     }
-
+    
+    // Save the edited text and revert to span mode
     function saveEditedText(element, input) {
         const newText = input.value.trim();
         const defaultText = element.getAttribute('data-default-text');
-
         element.innerHTML = newText || defaultText;
-        
         synchronizeText(newText, defaultText, element);
     }
 
