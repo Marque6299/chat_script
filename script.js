@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     class UIManager {
         constructor(state) {
             this.state = state;
+            this.inactivityTimeout = null;
             this.initEventListeners();
             this.setupTouchSwipeHandling();
         }
@@ -68,6 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Sidebar toggle
             $('#sidebarToggle')?.addEventListener('click', () => this.toggleSidebar());
             $('#closeSidebar')?.addEventListener('click', () => this.toggleSidebar());
+            
+            $('#sidebar')?.addEventListener('mousemove', () => this.resetInactivityTimer());
+            $('#sidebar')?.addEventListener('mousedown', () => this.resetInactivityTimer());
+            $('#sidebar')?.addEventListener('keydown', () => this.resetInactivityTimer());
+            document.addEventListener('click', (e) => this.handleOutsideClick(e));
+            
 
             // Form input handling
             $$('.form-input').forEach(input => {
@@ -89,6 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const searchTerm = e.target.value.toLowerCase().trim();
                 this.performSearch(searchTerm);
             }, CONFIG.SEARCH_DEBOUNCE_TIME));
+
+
+            $('.times-icon')?.addEventListener('click', () => {
+                $('.search-input').value = ''; // Clear the input field
+                this.performSearch(''); // Reset the search and display all sections
+            });
 
             // Escape key to close sidebar
             document.addEventListener('keydown', e => {
@@ -115,6 +128,54 @@ document.addEventListener('DOMContentLoaded', () => {
             
             document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
             sidebarToggle.setAttribute('aria-expanded', sidebar.classList.contains('open'));
+    
+            if (sidebar.classList.contains('open')) {
+                // Start the inactivity timer when the sidebar is opened
+                this.startInactivityTimer();
+            } else {
+                // Clear the inactivity timer when the sidebar is closed
+                this.clearInactivityTimer();
+            }
+        }
+    
+        // Start the inactivity timer
+        startInactivityTimer() {
+            this.clearInactivityTimer(); // Clear any existing timers first
+            this.inactivityTimeout = setTimeout(() => {
+                // Collapse the sidebar after a period of inactivity
+                this.toggleSidebar();
+            }, 5000); // Set to 5 seconds, or adjust as needed
+        }
+    
+        // Reset the inactivity timer when the user interacts with the sidebar
+        resetInactivityTimer() {
+            if (this.inactivityTimeout) {
+                clearTimeout(this.inactivityTimeout);
+                this.startInactivityTimer(); // Restart the timer on interaction
+            }
+        }
+    
+        // Clear the inactivity timer
+        clearInactivityTimer() {
+            if (this.inactivityTimeout) {
+                clearTimeout(this.inactivityTimeout);
+                this.inactivityTimeout = null;
+            }
+        }
+
+        handleOutsideClick(e) {
+            const sidebar = $('#sidebar');
+            const sidebarToggle = $('#sidebarToggle');
+            
+            if (sidebar.classList.contains('open')) {
+                // Check if the click was outside the sidebar or the toggle button
+                if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                    // If the click is not within a script-card, collapse the sidebar
+                    if (!e.target.closest('.script-card')) {
+                        this.toggleSidebar(); // Collapse sidebar
+                    }
+                }
+            }
         }
 
         // Clear form and reset manual edits
@@ -132,11 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Handle navigation between sections
         handleNavigation(button) {
-            // Remove active state from all buttons
             $$('.nav-btn').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
     
-            // Hide all sections
             $$('.interaction-section').forEach(section => {
                 section.classList.remove('active');
                 section.style.display = 'none';
@@ -146,92 +205,84 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
     
-            // Show target section
             const sectionId = button.id.replace('-nav', '-section');
             const targetSection = $(`#${sectionId}`);
             targetSection.classList.add('active');
             targetSection.style.display = 'block';
     
-            // Perform search if search input is not empty
             const searchInput = $('.search-input');
             if (searchInput && searchInput.value.trim() !== '') {
                 this.performSearch(searchInput.value.toLowerCase().trim());
             }
         }
-
-        // Reset section visibility
-        resetSectionVisibility(section) {
-            section.querySelectorAll('.section-header, .section-scripts, .script-card').forEach(el => {
-                el.style.display = '';
-            });
-        }
         
-        // Perform search across sections
         performSearch(searchTerm) {
             const sections = $$('.interaction-section');
             const activeNavBtn = $('.nav-btn.active');
             const activeSectionId = activeNavBtn.id.replace('-nav', '-section');
+            let foundMatch = false;
         
+            // Reset to show only the active section if the search bar is empty
             if (searchTerm === '') {
-                // Reset visibility for all sections before showing active one
                 sections.forEach(section => {
-                    section.querySelectorAll('.section-headers, .section-scripts, .script-card').forEach(el => {
-                        el.style.display = '';
-                    });
-                    section.style.display = section.id === activeSectionId ? 'block' : 'none';
+                    const sectionId = section.id;
+        
+                    if (sectionId === activeSectionId) {
+                        section.style.display = ''; // Show the active section
+                        section.querySelectorAll('.section-headers').forEach(header => {
+                            header.style.display = ''; // Show all headers in the active section
+                            header.nextElementSibling.style.display = ''; // Show their content
+                        });
+                    } else {
+                        section.style.display = 'none'; // Hide other sections
+                    }
                 });
                 return;
             }
         
+            // Hide all headers and contents initially
             sections.forEach(section => {
-                let sectionHasMatch = this.searchSectionHeaders(section, searchTerm);
-                section.style.display = sectionHasMatch ? 'block' : 'none';
+                let hasMatch = false; // Track if the section has at least one matching header
+        
+                section.querySelectorAll('.section-headers').forEach(header => {
+                    const headerText = header.textContent.toLowerCase();
+        
+                    if (headerText.includes(searchTerm)) {
+                        header.style.display = ''; // Show the matching header
+                        header.nextElementSibling.style.display = ''; // Show its content
+                        hasMatch = true;
+        
+                        // Auto-navigate to the section
+                        if (!foundMatch) {
+                            this.navigateToSection(section);
+                            foundMatch = true; // Stop after the first match
+                        }
+                    } else {
+                        header.style.display = 'none'; // Hide non-matching headers
+                        header.nextElementSibling.style.display = 'none'; // Hide their content
+                    }
+                });
+        
+                // Hide the section if no matches were found within it
+                section.style.display = hasMatch ? '' : 'none';
             });
         }
         
-        // Update the searchSectionHeaders method
-        searchSectionHeaders(section, searchTerm) {
-            let sectionHasMatch = false;
+        // Function to handle navigation to the found section
+        navigateToSection(section) {
+            // Scroll to the section
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         
-            const headers = section.querySelectorAll('.section-headers');
-            headers.forEach(header => {
-                // Search within the text of header and its child elements
-                const headerText = header.textContent.toLowerCase();
-                const headerMatch = headerText.includes(searchTerm);
-                
-                // Toggle visibility of the header and its scripts
-                const scriptContainer = header.nextElementSibling;
-                if (scriptContainer && scriptContainer.classList.contains('section-scripts')) {
-                    header.style.display = headerMatch ? '' : 'none';
-                    scriptContainer.style.display = headerMatch ? '' : 'none';
-                }
-                
-                if (headerMatch) {
-                    sectionHasMatch = true;
-                }
-            });
+            // Update the active section in the navigation
+            const sectionId = section.id;
+            const correspondingNavBtn = $(`#${sectionId.replace('-section', '-nav')}`);
+            
+            if (correspondingNavBtn) {
+                $$('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                correspondingNavBtn.classList.add('active');
+            }
+        }
         
-            return sectionHasMatch;
-        }
-    
-        resetSearchView(sections, activeSectionId) {
-            sections.forEach(section => {
-                if (section.id === activeSectionId) {
-                    // Show the active section
-                    section.style.display = 'block';
-                    
-                    // Reset all headers and script containers in the active section
-                    section.querySelectorAll('.section-headers, .section-scripts, .section-scripts').forEach(el => {
-                        el.style.display = '';
-                    });
-                } else {
-                    // Hide other sections
-                    section.style.display = 'none';
-                }
-            });
-        }
-
-        // Setup touch swipe handling for mobile
         setupTouchSwipeHandling() {
             let touchStartX = 0;
 
@@ -270,6 +321,10 @@ document.addEventListener('DOMContentLoaded', () => {
             element.appendChild(input);
             input.focus();
 
+            input.addEventListener('input', function() {
+                synchronizeText(input.value, defaultText, element);
+            });
+            
             input.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter') {
                     saveEditedText(element, input);
@@ -282,18 +337,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Save edited text back to span
+    function synchronizeText(value, defaultText, editedElement) {
+        const allSpans = document.querySelectorAll(`[data-default-text="${defaultText}"]`);
+        allSpans.forEach(span => {
+            if (span !== editedElement) {  // Skip the currently edited span
+                span.innerText = value || defaultText;  // Update all matching spans in real-time
+            }
+        });
+    }
+
     function saveEditedText(element, input) {
         const newText = input.value.trim();
         const defaultText = element.getAttribute('data-default-text');
 
         element.innerHTML = newText || defaultText;
+        
+        synchronizeText(newText, defaultText, element);
     }
 
-    // Check if all manual edit spans have been modified
     function checkIfAllEdited(scriptCard) {
         const manualEditSpans = scriptCard.querySelectorAll('.manual-edit');
-        
         for (let span of manualEditSpans) {
             const currentText = span.innerText;
             const defaultText = span.getAttribute('data-default-text');
@@ -302,14 +365,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 return false;
             }
         }
-
         return true;
     }
 
-    // Copy text to clipboard
     function copyToClipboard(element) {
-        const allEdited = checkIfAllEdited(element);
-        if (!allEdited) return;
+        const spans = element.querySelectorAll('span');
+        let hasDefaultText = false;
+        let hasManualEdit = false;
+
+        spans.forEach(span => {
+            const currentText = span.textContent.trim();
+            const defaultText = span.getAttribute('data-default-text');
+            if (currentText === defaultText && !span.classList.contains('manual-edit')) {
+                hasDefaultText = true;
+            }
+            if (span.classList.contains('manual-edit')) {
+                hasManualEdit = true;
+            }
+        });
+
+        if (hasDefaultText) {
+            showTooltip(element, "Please update the form before copying.");
+            openSidebar();
+            return;
+        }
+
+        if (hasManualEdit) {
+            const allEdited = checkIfAllEdited(element);
+            if (!allEdited) return;
+        }
 
         const textToCopy = element.innerText || element.textContent;
 
@@ -318,17 +402,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.body.appendChild(tempTextArea);
         tempTextArea.select();
-        tempTextArea.setSelectionRange(0, 99999); 
+        tempTextArea.setSelectionRange(0, 99999);
         document.execCommand('copy');
         document.body.removeChild(tempTextArea);
 
-        showTooltip(element);
+        showTooltip(element, "Copied!");
     }
 
-    // Show tooltip after copying
-    function showTooltip(element) {
+    function showTooltip(element, message) {
         const tooltip = document.getElementById('tooltip');
         const rect = element.getBoundingClientRect();
+
+        tooltip.textContent = message;
 
         const tooltipWidth = tooltip.offsetWidth;
         const tooltipHeight = tooltip.offsetHeight;
@@ -346,17 +431,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }, CONFIG.TOOLTIP_DURATION);
     }
 
-    // Reset manual edits
+    function openSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        sidebar.classList.add('open');
+        sidebarToggle.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        sidebarToggle.setAttribute('aria-expanded', true);
+    }
+
     function resetManualEdits(card) {
         const manualEditSpans = card.querySelectorAll('.manual-edit');
-        
         manualEditSpans.forEach(function(span) {
             const defaultText = span.getAttribute('data-default-text');
             span.innerHTML = defaultText;
         });
     }
 
-    // Add reset buttons to script cards
     function addResetButtonToScriptCards() {
         document.querySelectorAll('.script-card').forEach(function(card) {
             const manualEditSpans = card.querySelectorAll('.manual-edit');
@@ -376,7 +468,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Attach copy functionality to script cards
     function attachCopyFunctionality() {
         document.querySelectorAll('.script-card').forEach(function(card) {
             card.addEventListener('click', function(event) {
@@ -386,11 +477,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize the application
     const appState = new AppState();
     const uiManager = new UIManager(appState);
     
-    // Additional initialization
     addResetButtonToScriptCards();
     attachCopyFunctionality();
     appState.updatePlaceholders();
