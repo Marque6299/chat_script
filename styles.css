@@ -157,11 +157,6 @@ body {
     padding-right: 0;
 }
 
-.sidebar.open + .main-content {
-    margin-right: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
-}
-
 .app-header {
     display: flex;
     justify-content: space-between;
