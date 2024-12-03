@@ -217,10 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         performSearch(searchTerm) {
-            const sections = $$('.interaction-section');
-            const activeNavBtn = $('.nav-btn.active');
-            const activeSectionId = activeNavBtn.id.replace('-nav', '-section');
-            let foundMatch = false;
+            const sections = document.querySelectorAll('.interaction-section');
+            const activeSectionId = document.querySelector('.nav-btn.active').id.replace('-nav', '-section');
         
             // Reset to show only the active section if the search bar is empty
             if (searchTerm === '') {
@@ -228,12 +226,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const sectionId = section.id;
         
                     if (sectionId === activeSectionId) {
+                        section.classList.add('active'); // Set the section as active
                         section.style.display = ''; // Show the active section
                         section.querySelectorAll('.section-headers').forEach(header => {
-                            header.style.display = ''; // Show all headers in the active section
+                            header.style.display = ''; // Show all headers
                             header.nextElementSibling.style.display = ''; // Show their content
                         });
                     } else {
+                        section.classList.remove('active'); // Remove active state
                         section.style.display = 'none'; // Hide other sections
                     }
                 });
@@ -251,36 +251,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         header.style.display = ''; // Show the matching header
                         header.nextElementSibling.style.display = ''; // Show its content
                         hasMatch = true;
-        
-                        // Auto-navigate to the section
-                        if (!foundMatch) {
-                            this.navigateToSection(section);
-                            foundMatch = true; // Stop after the first match
-                        }
                     } else {
                         header.style.display = 'none'; // Hide non-matching headers
                         header.nextElementSibling.style.display = 'none'; // Hide their content
                     }
                 });
         
-                // Hide the section if no matches were found within it
-                section.style.display = hasMatch ? '' : 'none';
+                // Change section state based on matches
+                if (hasMatch) {
+                    section.classList.add('active'); // Set section as active
+                    section.style.display = ''; // Show the section
+                } else {
+                    section.classList.remove('active'); // Remove active state
+                    section.style.display = 'none'; // Hide the section
+                }
             });
-        }
-        
-        // Function to handle navigation to the found section
-        navigateToSection(section) {
-            // Scroll to the section
-            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        
-            // Update the active section in the navigation
-            const sectionId = section.id;
-            const correspondingNavBtn = $(`#${sectionId.replace('-section', '-nav')}`);
-            
-            if (correspondingNavBtn) {
-                $$('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                correspondingNavBtn.classList.add('active');
-            }
         }
         
         setupTouchSwipeHandling() {
