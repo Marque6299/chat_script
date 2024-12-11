@@ -61,6 +61,7 @@
                 <button id="schedule-change-nav" class="nav-btn">Schedule Change</button>
                 <button id="name-correction-nav" class="nav-btn" style="display: none;">Name Correction</button>
                 <button id="yy-contact-nav" class="nav-btn" style="display: none;">YY Contact</button>
+                <button id="helpful-scripts-nav" class="nav-btn">Helpful Scripts</button>
                 <button id="csat-scripts-nav" class="nav-btn">C-Sat Scripts</button>
             </nav>
 
@@ -118,6 +119,115 @@
                                 We're sorry to inform you that the booking reference does not match a ticket purchased through our website. 
                                 It appears that your ticket was acquired through another company. 
                                 If you have any additional questions or concerns, please don't hesitate to reach out to us again.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Chat Opening due to long wait time (more than 5 minutes) Request stated</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                Hi <span class="manual-edit" data-default-text="[Cx Name]" onclick="enableTextEdit(this)">[Cx Name]</span> 
+                                from <span class="manual-edit" data-default-text="[Brand]" onclick="enableTextEdit(this)">[Brand]</span>
+                                support, and I'm here to assist you today. 
+                                Due to the high volume of requests we are receiving, you might have experienced delays. 
+                                Thank you for your patience and understanding. Please allow me a few minutes to review your case.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Chat Opening due to long wait time (more than 5 minutes) Request <strong>NOT stated</strong></h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                Hi <span class="manual-edit" data-default-text="[Cx Name]" onclick="enableTextEdit(this)">[Cx Name]</span> 
+                                from <span class="manual-edit" data-default-text="[Brand]" onclick="enableTextEdit(this)">[Brand]</span>
+                                support, and I'm here to assist you today. 
+                                Due to the high volume of requests we are receiving, you might have experienced delays. 
+                                Thank you for your patience and understanding. 
+                                How may I help you with your booking?
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!--Opening END-->
+                <!--Helpful Scripts-->
+                <section id="helpful-scripts-section" class="interaction-section">
+                    <div class="section-grid">
+                        <div class="section-headers">
+                            <h3>Initiating a positive interaction/simple requests</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                Sure, let me check that for you.
+                            </div>
+                            <div class="script-card">
+                                Sure, I’ll be happy to help.
+                            </div>
+                            <div class="script-card">
+                                Absolutely, I can help with that
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Acknowledging customer's answers</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                Great! Let me check that for you.
+                            </div>
+                            <div class="script-card">
+                                No worries at all.
+                            </div>
+                            <div class="script-card">
+                                Not a problem at all.
+                            </div>
+                            <div class="script-card">
+                                My pleasure!
+                            </div>
+                            <div class="script-card">
+                                I appreciate that!
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Find out some information</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                That is a good question, let me check the details for you.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Assurance Statement</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                I'll be happy to help you with your request, give me some time to review the <span class="manual-edit" data-default-text="[policy/information/details/availability]" onclick="enableTextEdit(this)">[policy/information/details/availability]</span>.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Empathy Statement</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                I appreciate your point. Let me see what I can do.
+                            </div>
+                            <div class="script-card">
+                                I am really sorry to hear that. Let me see what I can do to help. 
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Apology</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                I understand your frustration. I will do my best to help you.
+                            </div>
+                            <div class="script-card">
+                                I apologize for the inconvenience. I will do my best to provide you the best option.  
+                            </div>
+                            <div class="script-card">
+                                I am really sorry this happened. Let me see if I can find a solution your concern.  
+                            </div>
+                            <div class="script-card">
+                                I’m sorry you are having this problem. Let’s see what I can do to solve this for you.  
                             </div>
                         </div>
                     </div>
@@ -187,11 +297,24 @@
                             </div>
                         </div>
                         <div class="section-headers">
-                            <h3>Refresh Hold</h3>
+                            <h3>Refresh/Extend Hold</h3>
                         </div>
                         <div class="section-scripts">
                             <div class="script-card">
                                 Thank you for waiting. But I will need 5 more minutes to work on your request.
+                            </div>
+                            <div class="script-card">
+                                Thank you for your continued patience. 
+                                I will require a 5 extra minutes to thoroughly work on your request.
+                            </div>
+                            <div class="script-card">
+                                I appreciate your understanding during this time. 
+                                I will need a 5 more minutes to ensure your request is handled properly.
+                            </div>
+                            <div class="script-card">
+                                I appreciate your patience. 
+                                I would be needing a few additional minutes to complete your request. 
+                                I'll give you update within 5 minutes.
                             </div>
                         </div>
                         <div class="section-headers">
@@ -718,6 +841,17 @@
                                 Airline Cancellation fee: <span class="manual-edit" data-default-text="[Airline Cancelation fee]" onclick="enableTextEdit(this)">[Airline Cancelation fee]</span><br>
                                 Handling fee: <span class="manual-edit" data-default-text="[Cancelation Handling fee]" onclick="enableTextEdit(this)">[Cancelation Handling fee]</span><br>
                                 Would you like us to proceed with canceling your booking and submitting a refund request to the airline?
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Cancel (Non-refundable)</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                According to the airline rules, 
+                                the ticket, including any add-on products such as 
+                                <span class="manual-edit" data-default-text="(baggage/seat/meal)" onclick="enableTextEdit(this)">(baggage/seat/meal)</span> 
+                                fees, is non-refundable. Would you still like me to cancel your booking?
                             </div>
                         </div>
                         <div class="section-headers">
