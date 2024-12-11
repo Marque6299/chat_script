@@ -62,6 +62,7 @@
                 <button id="name-correction-nav" class="nav-btn" style="display: none;">Name Correction</button>
                 <button id="yy-contact-nav" class="nav-btn" style="display: none;">YY Contact</button>
                 <button id="helpful-scripts-nav" class="nav-btn">Helpful Scripts</button>
+                <button id="general-scripts-nav" class="nav-btn">General Scripts</button>
                 <button id="csat-scripts-nav" class="nav-btn">C-Sat Scripts</button>
             </nav>
 
@@ -1009,7 +1010,139 @@
                             </div>
                         </div>
                     </div>
+                </section>.
+                <!--Schedule Change END-->
+                <!--General Scripts-->
+                <section id="general-scripts-section" class="interaction-section">
+                    <div class="section-grid">
+                        <div class="section-headers">
+                            <h3>Acknowledgment (Cancel)</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                I understand that you wanted to cancel your flight. 
+                                I'll be glad to check the cancellation policy. 
+                                Please allow me 5 minutes to check the information.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Acknowledgment (Rebooking)</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                I see that you would like to change the booking. 
+                                I'll be happy to help you with your request. 
+                                May I know your preferred flight please? 
+                            </div>
+                            <div class="script-card">
+                                I see that you would like to change the booking. 
+                                I'll be happy to help you with your request, 
+                                please give me some time to review the availability. 
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Complaint due to extended refund time frame (Delayed Refund)</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                We totally get how frustrating it can be when things take longer than expected, 
+                                and we're really sorry if this delay has caused any inconvenience to you. 
+                                Rest assured, we're doing all we can to speed up this refund process. 
+                                Normally, once we get the go-ahead from the airline, we aim to sort it out within about 6 days. 
+                                But sometimes, delays beyond our control can be caused.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Passport Details (Asking the passport details from the customer)</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                Kindly share us below details as per your passport: <br>
+                                Document issue country: <br>
+                                Document number: <br>
+                                Document nationality country: <br>
+                                Date of birth: <br>
+                                Gender: <br>
+                                Document expiration date: <br>
+                                Last name: <br>
+                                First name: <br>
+                                Middle name or initial: <br>
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Disconnect First Warning</h3>
+                            <p>To use when the customer doesn't respond for 2 minutes. Send it and wait for another 3 min.</p>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                I didn't receive a response, and I want to make sure we're still connected. 
+                                Let me know by responding to the chat. 
+                                Otherwise, this chat will close in 3 minutes.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Disconnect Final Warning</h3>
+                            <p>Close chat after no response for 5 min ETG/B.com UK</p>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                I still haven't received a response, and it seems that you are no longer connected. 
+                                This chat will now be closed. 
+                                If you need further assistance, 
+                                please start a new chat. Thank you.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Cancellation Guarantee</h3>
+                            <p>Customer purchased the Cancellation Guarantee</p>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                Hi <span class="manual-edit" data-default-text="[Cx Name]" onclick="enableTextEdit(this)">[Cx Name]</span>, 
+                                sure, I will be happy to assist you with the cancellation using the Cancellation Guarantee Product. 
+                                Please note, that, we need to check for certain eligibility criteria. 
+                                Once eligible, please note, that - <br>
+                                1. This product qualifies you for 90% of the ticket value in the form of a voucher that can be redeemed only on our website 
+                                <span class="manual-edit" data-default-text="[www.xyz.com]" onclick="enableTextEdit(this)">[www.xyz.com]</span><br>
+                                2. The voucher is valid for 12 months from the date of issuance. 
+                                Please allow me up to 5 min to check if this booking is eligible for cancellation using the Cancellation Guarantee Product.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Email Template</h3>
+                            <p>Customer stopped responding - Cancel Request</p>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                We have received your query about a cancellation request. However, the chat went idle.<br>
+                                Please note that I have not made any cancellation to your booking.<br>
+                                If you decide to proceed, contact us again no later than 
+                                <span class="manual-edit" data-default-text="[Cancelation deadline]" onclick="enableTextEdit(this)">[Cancelation deadline]</span> 
+                                prior your departure.
+                                After this date, cancellation may not be allowed or additional airline fees may apply.<br><br>
+                                Please note that <span class="manual-edit" data-default-text="[Airline Cancelation fee]" onclick="enableTextEdit(this)">[Airline Cancelation fee]</span> 
+                                and  our handling fee of <span class="manual-edit" data-default-text="[Cancelation Handling fee]" onclick="enableTextEdit(this)">[Cancelation Handling fee]</span> 
+                                will be applied.
+                            </div>
+                        </div>
+                        <div class="section-headers">
+                            <h3>Ancillary - Baggage Unable to add baggage (GDS/LCC)</h3>
+                        </div>
+                        <div class="section-scripts">
+                            <div class="script-card">
+                                Due to airline restrictions, we are unable to add baggage for you and modifications such as adding baggage 
+                                typically need to be done directly with the airline. The airline would be better equipped to assist you with this information. 
+                                Please find their contact details below: 
+                                <span class="manual-edit" data-default-text="[Airline Phone #]" onclick="enableTextEdit(this)">[Airline Phone #]</span> 
+                                using reference number 
+                                <span class="manual-edit" data-default-text="[XXXX]" onclick="enableTextEdit(this)">[XXXX]</span> 
+                                for a swifter resolution. 
+                                We truly appreciate your business
+                            </div>
+                        </div>
+                    </div>
                 </section>
+                <!--General Scripts END-->
                 <!-- More sections can be added similarly -->
             </div>
         </main>
